@@ -6,16 +6,16 @@ const { Readable } = require('stream')
 const imageHandler = async event => {
   const imageID = event.message.id
   const buffers = []
-  const stream = await bot_client.getMessageContent(imageID)
+  const readableBuffer = await bot_client.getMessageContent(imageID)
   return new Promise((resolve, reject) => {
-    stream.on('data', chunk => {
+    readableBuffer.on('data', chunk => {
       buffers.push(chunk)
     })
-    stream.on('error', err => {
+    readableBuffer.on('error', err => {
       console.log(err)
       reject()
     })
-    stream.on('end', async () => {
+    readableBuffer.on('end', async () => {
       const stream = Readable.from(buffers)
       const data = await imgur_client.upload({
         image: stream,
